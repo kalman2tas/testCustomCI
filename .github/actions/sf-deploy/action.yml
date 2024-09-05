@@ -123,5 +123,5 @@ runs:
         fi
         # Start the Salesforce deployment process with the specified flags
         echo "sf project deploy start ${deployFlags[@]} --verbose"
-        sf project deploy start "${deployFlags[@]} --verbose" > deploy_output.txt
+        sf project deploy start "${deployFlags[@]}" --verbose > deploy_output.txt
         cat deploy_output.txt
