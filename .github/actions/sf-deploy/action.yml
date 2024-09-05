@@ -122,4 +122,5 @@ runs:
           deployFlags+=( --dry-run )
         fi
         # Start the Salesforce deployment process with the specified flags
+        echo "sf project deploy start ${deployFlags[@]}"
         sf project deploy start "${deployFlags[@]}"
