@@ -8,5 +8,5 @@ public class OpportunityProcessor {
     public static Decimal calculateTotalAmount(List<Id> opportunityIds) {
         AggregateResult[] results = [SELECT SUM(Amount) total FROM Opportunity WHERE Id IN :opportunityIds];
         return (Decimal)results[0].get('total');
-    }
+    } 
 }
