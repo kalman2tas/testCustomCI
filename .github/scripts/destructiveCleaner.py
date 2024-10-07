@@ -16,5 +16,5 @@ def remove_unwanted_members(xml_file):
                 type_element.remove(member)
     tree.write(xml_file, encoding='UTF-8', xml_declaration=True)
 
-xml_file = 'destructiveChanges.xml'
+xml_file = 'destructiveChanges/destructiveChanges.xml'
 remove_unwanted_members(xml_file)
