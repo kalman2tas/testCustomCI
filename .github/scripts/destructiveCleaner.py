@@ -6,7 +6,11 @@ def remove_unwanted_members(xml_file):
 
     namespaces = {'': 'http://soap.sforce.com/2006/04/metadata'}
 
-    for type_element in root.findall('types', namespaces):
+    types_elements = root.findall('types', namespaces)
+
+    if not types_elements:
+        return
+    for type_element in types_elements:
         type_name = type_element.find('name', namespaces).text if type_element.find('name', namespaces) is not None else None
         for member in list(type_element.findall('members', namespaces)):
             member_text = member.text
