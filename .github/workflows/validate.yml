@@ -8,7 +8,9 @@ on:
       - uat  # Trigger on pull requests to 'uat' branch
       - main # Trigger on pull requests to 'main' branch
     paths:
-      - '**' # Only trigger if changes are made in 'force-app' directory
+      - 'force-app/**' # Only trigger if changes are made in 'force-app' directory
+    paths-ignore:
+      - '.github/**'
 
 # Dynamically set the run name based on the target branch of the pull request
 run-name: >-
