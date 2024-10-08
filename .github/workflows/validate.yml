@@ -8,8 +8,8 @@ on:
       - uat  # Trigger on pull requests to 'uat' branch
       - main # Trigger on pull requests to 'main' branch
     paths:
-      - 'force-app/**' # Only trigger if changes are made in 'force-app' directory
-
+      - '**'
+      
 # Dynamically set the run name based on the target branch of the pull request
 run-name: >-
   ${{ github.event.pull_request.base.ref == 'int' && format('Validate to INT by {0} PR Name: {1}', github.event.pull_request.user.login, github.event.pull_request.title) || 

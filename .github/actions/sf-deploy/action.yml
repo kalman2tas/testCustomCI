@@ -75,8 +75,10 @@ runs:
         # Display the contents of the generated package.xml file and destructiveChanges.xml file
         echo "Deployment package:"
         cat package/package.xml
+        python ./.github/scripts/destructiveCleaner.py
         echo -e "\nDestructive Changes:"
         cat destructiveChanges/destructiveChanges.xml
+        MEMBERS=$(python ./.github/scripts/countMembers.py)
 
     - name: Generate FULL package.xml
       if: ${{ inputs.DEPLOY_TYPE == 'FULL'}}  # Execute this step only if the DEPLOY_TYPE is 'FULL'
@@ -136,5 +138,9 @@ runs:
         if [ "${{ inputs.DRY_RUN }}" = "true" ]; then
           deployFlags+=( --dry-run )
         fi
-        # Start the Salesforce deployment process with the specified flags
-        sf project deploy start "${deployFlags[@]}"
+        if [[ "${{ inputs.DEPLOY_TYPE }}" == "FULL" || "$MEMBERS" -gt 0 ]]; then
+          # Start the Salesforce deployment process with the specified flags
+          sf project deploy start "${deployFlags[@]}"
+        else
+          echo "No items in the package xml-s to deploy, deploment is skipped."
+        fi
