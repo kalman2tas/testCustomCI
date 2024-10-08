@@ -7,9 +7,9 @@ on:
       - int  # Trigger on pull requests to 'int' branch
       - uat  # Trigger on pull requests to 'uat' branch
       - main # Trigger on pull requests to 'main' branch
-    paths-ignore:
-      - '.github/**'
-
+    paths:
+      - '**'
+      
 # Dynamically set the run name based on the target branch of the pull request
 run-name: >-
   ${{ github.event.pull_request.base.ref == 'int' && format('Validate to INT by {0} PR Name: {1}', github.event.pull_request.user.login, github.event.pull_request.title) || 
