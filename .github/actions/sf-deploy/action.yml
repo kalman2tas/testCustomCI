@@ -138,7 +138,7 @@ runs:
         if [ "${{ inputs.DRY_RUN }}" = "true" ]; then
           deployFlags+=( --dry-run )
         fi
-        if [[ "${{ inputs.DEPLOY_TYPE }}" == "FULL" || "$MEMBERS" -gt 0]]; then
+        if [[ "${{ inputs.DEPLOY_TYPE }}" == "FULL" || "$MEMBERS" -gt 0 ]]; then
           # Start the Salesforce deployment process with the specified flags
           sf project deploy start "${deployFlags[@]}"
         else
