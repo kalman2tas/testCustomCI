@@ -7,8 +7,6 @@ on:
       - int  # Trigger on pull requests to 'int' branch
       - uat  # Trigger on pull requests to 'uat' branch
       - main # Trigger on pull requests to 'main' branch
-    paths:
-      - 'force-app/**' # Only trigger if changes are made in 'force-app' directory
     paths-ignore:
       - '.github/**'
 
