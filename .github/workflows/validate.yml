@@ -32,14 +32,17 @@ jobs:
             echo "SFDX_AUTH_URL=${{ secrets.SFDX_AUTH_URL_INT }}" >> $GITHUB_ENV
             echo "TEST_LEVEL=RunSpecifiedTests" >> $GITHUB_ENV
             echo "DEPLOY_TYPE=DELTA" >> $GITHUB_ENV
+            echo "DESTRUCTIVE=${{ vars.INT_DESTRUCTIVE }}" >> $GITHUB_ENV
           elif [ "${{ github.event.pull_request.base.ref }}" == "${{ vars.UAT_BRANCH }}" ]; then
             echo "SFDX_AUTH_URL=${{ secrets.SFDX_AUTH_URL_UAT }}" >> $GITHUB_ENV
             echo "TEST_LEVEL=RunLocalTests" >> $GITHUB_ENV
             echo "DEPLOY_TYPE=FULL" >> $GITHUB_ENV
+            echo "DESTRUCTIVE=${{ vars.UAT_DESTRUCTIVE }}" >> $GITHUB_ENV
           elif [ "${{ github.event.pull_request.base.ref }}" == "${{ vars.MAIN_BRANCH }}" ]; then
             echo "SFDX_AUTH_URL=${{ secrets.SFDX_AUTH_URL_PROD }}" >> $GITHUB_ENV
             echo "TEST_LEVEL=RunLocalTests" >> $GITHUB_ENV
             echo "DEPLOY_TYPE=FULL" >> $GITHUB_ENV
+            echo "DESTRUCTIVE=${{ vars.MAIN_DESTRUCTIVE }}" >> $GITHUB_ENV
           fi
 
       - name: Validate
@@ -50,3 +53,4 @@ jobs:
           WAIT: 30  # Wait time in seconds before finishing
           SFDX_AUTH_URL: ${{ env.SFDX_AUTH_URL }}  # Pass the Salesforce DX authentication URL
           DEPLOY_TYPE: ${{ env.DEPLOY_TYPE }}  # Pass the deployment type
+          DESTRUCIVE: ${{ env.DESTRUCIVE }}
