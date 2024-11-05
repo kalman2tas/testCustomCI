@@ -79,7 +79,8 @@ runs:
         echo -e "\nDestructive Changes:"
         cat destructiveChanges/destructiveChanges.xml
         MEMBERS=$(python ./.github/scripts/countMembers.py)
-        echo "Numer fo changed items: $MEMBERS"
+        MEMBERS=$((MEMBERS + 0))
+        echo "Numer of changed items: $MEMBERS"
 
     - name: Generate FULL package.xml
       if: ${{ inputs.DEPLOY_TYPE == 'FULL'}}  # Execute this step only if the DEPLOY_TYPE is 'FULL'
