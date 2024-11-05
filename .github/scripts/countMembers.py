@@ -34,4 +34,4 @@ if __name__ == "__main__":
     
 
     total_member_count = count_members_in_multiple_packages(package_files)
-    print(total_member_count)
+    print("true" if total_member_count > 0 else "false")

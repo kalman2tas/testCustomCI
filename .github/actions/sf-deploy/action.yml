@@ -78,9 +78,8 @@ runs:
         python ./.github/scripts/destructiveCleaner.py
         echo -e "\nDestructive Changes:"
         cat destructiveChanges/destructiveChanges.xml
-        MEMBERS=$(python ./.github/scripts/countMembers.py | xargs)
-        MEMBERS=$((MEMBERS + 0))
-        echo "Numer of changed items: $MEMBERS"
+        MEMBERS=$(python ./.github/scripts/countMembers.py)
+        echo "\nItems changed: $MEMBERS"
 
     - name: Generate FULL package.xml
       if: ${{ inputs.DEPLOY_TYPE == 'FULL'}}  # Execute this step only if the DEPLOY_TYPE is 'FULL'
@@ -140,7 +139,7 @@ runs:
         if [ "${{ inputs.DRY_RUN }}" = "true" ]; then
           deployFlags+=( --dry-run )
         fi
-        if [[ "${{ inputs.DEPLOY_TYPE }}" == "FULL" || "$MEMBERS" -gt "0" ]]; then
+        if [[ "${{ inputs.DEPLOY_TYPE }}" == "FULL" || "$MEMBERS" = "true" ]]; then
           # Start the Salesforce deployment process with the specified flags
           sf project deploy start "${deployFlags[@]}"
         else
