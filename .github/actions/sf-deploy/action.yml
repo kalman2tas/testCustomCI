@@ -78,7 +78,7 @@ runs:
         python ./.github/scripts/destructiveCleaner.py
         echo -e "\nDestructive Changes:"
         cat destructiveChanges/destructiveChanges.xml
-        MEMBERS=$(python ./.github/scripts/countMembers.py)
+        MEMBERS=$(python ./.github/scripts/countMembers.py | xargs)
         MEMBERS=$((MEMBERS + 0))
         echo "Numer of changed items: $MEMBERS"
 
