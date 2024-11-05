@@ -29,12 +29,15 @@ jobs:
           if [ "${{ github.event.pull_request.base.ref }}" == "${{ vars.INT_BRANCH }}" ]; then
             echo "SFDX_AUTH_URL=${{ secrets.SFDX_AUTH_URL_INT }}" >> $GITHUB_ENV
             echo "DEPLOY_TYPE=DELTA" >> $GITHUB_ENV
+            echo "DESTRUCTIVE=${{ vars.INT_DESTRUCTIVE }}" >> $GITHUB_ENV
           elif [ "${{ github.event.pull_request.base.ref }}" == "${{ vars.UAT_BRANCH }}" ]; then
             echo "SFDX_AUTH_URL=${{ secrets.SFDX_AUTH_URL_UAT }}" >> $GITHUB_ENV
             echo "DEPLOY_TYPE=FULL" >> $GITHUB_ENV
+            echo "DESTRUCTIVE=${{ vars.UAT_DESTRUCTIVE }}" >> $GITHUB_ENV
           elif [ "${{ github.event.pull_request.base.ref }}" == "${{ vars.MAIN_BRANCH }}" ]; then
             echo "SFDX_AUTH_URL=${{ secrets.SFDX_AUTH_URL_PROD }}" >> $GITHUB_ENV
             echo "DEPLOY_TYPE=QUICK" >> $GITHUB_ENV
+            echo "DESTRUCTIVE=${{ vars.MAIN_DESTRUCTIVE }}" >> $GITHUB_ENV
           fi
 
       - name: Deploy to target org (DELTA)
@@ -46,6 +49,7 @@ jobs:
           WAIT: 30
           SFDX_AUTH_URL: ${{ env.SFDX_AUTH_URL }}
           DEPLOY_TYPE: ${{ env.DEPLOY_TYPE }}
+          DESTRUCIVE: ${{ env.DESTRUCIVE }}
 
       - name: Deploy to target org (FULL)
         if: ${{ steps.check_approvals_status.outputs.check_approvals_status == 'success' && env.DEPLOY_TYPE == 'FULL' }}
@@ -56,6 +60,7 @@ jobs:
           DEPLOY_TYPE: FULL
           WAIT: 30
           SFDX_AUTH_URL: ${{ env.SFDX_AUTH_URL }}
+          DESTRUCIVE: ${{ env.DESTRUCIVE }}
 
       - name: Deploy to target org (QUICK)
         if: ${{ steps.check_approvals_status.outputs.check_approvals_status == 'success' && env.DEPLOY_TYPE == 'QUICK' }}
