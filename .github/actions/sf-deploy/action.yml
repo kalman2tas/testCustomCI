@@ -110,7 +110,7 @@ runs:
           # Add flags for delta deployments, including the manifest and post-destructive changes files
           deployFlags+=( --manifest package/package.xml )
         fi
-        if [ "${{ inputs.DESTRUCIVE }}" == "true" ]; then
+        if [ "${{ inputs.DESTRUCIVE }}" = "true" ]; then
           deployFlags+=( --post-destructive-changes destructiveChanges/destructiveChanges.xml )
           deployFlags+=( --ignore-warnings )
         fi
@@ -136,10 +136,10 @@ runs:
           echo "Test runs in the following mode: NoTestRun"
         fi
         # Add the dry run flag if DRY_RUN is set to true
-        if [ "${{ inputs.DRY_RUN }}" == "true" ]; then
+        if [ "${{ inputs.DRY_RUN }}" = "true" ]; then
           deployFlags+=( --dry-run )
         fi
-        if [[ "${{ inputs.DEPLOY_TYPE }}" == "FULL" || "$MEMBERS" == "true" ]]; then
+        if [[ "${{ inputs.DEPLOY_TYPE }}" = "FULL" || "$MEMBERS" = "true" ]]; then
           # Start the Salesforce deployment process with the specified flags
           sf project deploy start "${deployFlags[@]}"
         else
