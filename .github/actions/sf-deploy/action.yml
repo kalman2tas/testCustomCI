@@ -145,6 +145,8 @@ runs:
         fi
         if [[ "${{ inputs.DEPLOY_TYPE }}" == "FULL" || "$MEMBERS" -gt 0 || "$DELETE_MEMBERS" -gt 0 ]]; then
           # Start the Salesforce deployment process with the specified flags
+          echo "Deployment parameters:"
+          printf '%s\n' "${deployFlags[@]}"
           sf project deploy start "${deployFlags[@]}"
         else
           echo "No items in the package xml-s to deploy, deploment is skipped."
