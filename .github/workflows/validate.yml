@@ -53,4 +53,4 @@ jobs:
           WAIT: 30  # Wait time in seconds before finishing
           SFDX_AUTH_URL: ${{ env.SFDX_AUTH_URL }}  # Pass the Salesforce DX authentication URL
           DEPLOY_TYPE: ${{ env.DEPLOY_TYPE }}  # Pass the deployment type
-          DESTRUCIVE: ${{ env.DESTRUCIVE }}
+          DESTRUCTIVE: ${{ env.DESTRUCTIVE }}

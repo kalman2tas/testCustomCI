@@ -41,7 +41,7 @@
      - INT_ORG = INT
 
 3. **Add repository variables:**
-   - Enable/disable destrucive changes for repositories.
+   - Enable/disable destructive changes for repositories.
    - Change to variables tab and add New repository variables:
      - INT_DESTRUCTIVE = true/false
      - UAT_DESTRUCTIVE = true/false
