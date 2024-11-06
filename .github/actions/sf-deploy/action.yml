@@ -80,12 +80,10 @@ runs:
         cat destructiveChanges/destructiveChanges.xml
         MEMBERS_COUNT=$(python ./.github/scripts/countMembers.py "package/package.xml")
         echo "MEMBERS=$MEMBERS_COUNT" >> $GITHUB_ENV
-        echo -e "\nNumer of changed items: $MEMBERS"
+        echo -e "\nNumer of changed items: $MEMBERS_COUNT"
         MEMBERS_COUNT=$(python ./.github/scripts/countMembers.py "destructiveChanges/destructiveChanges.xml")
         echo "DELETE_MEMBERS=$MEMBERS_COUNT" >> $GITHUB_ENV
-        echo -e "\nNumer of items to delete: $DELETE_MEMBERS"
-        python ./.github/scripts/countMembers.py "package/package.xml"
-        python ./.github/scripts/countMembers.py "destructiveChanges/destructiveChanges.xml"
+        echo -e "\nNumer of items to delete: $MEMBERS_COUNT"
 
     - name: Generate FULL package.xml
       if: ${{ inputs.DEPLOY_TYPE == 'FULL'}}  # Execute this step only if the DEPLOY_TYPE is 'FULL'
