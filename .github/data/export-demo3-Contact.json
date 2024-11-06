@@ -5,7 +5,8 @@
                 "type": "Contact",
                 "referenceId": "ContactRef1"
             },
-            "Name": "Geoff Minor",
+            "FirstName": "Amos",
+            "LastName": "Minor",
             "AccountId": "@AccountRef1"
         },
         {
@@ -13,7 +14,8 @@
                 "type": "Contact",
                 "referenceId": "ContactRef2"
             },
-            "Name": "Carole White",
+            "FirstName": "Amos",
+            "LastName": "Jony",
             "AccountId": "@AccountRef1"
         },
         {
@@ -21,7 +23,8 @@
                 "type": "Contact",
                 "referenceId": "ContactRef3"
             },
-            "Name": "Jon Amos",
+            "FirstName": "Amos",
+            "LastName": "Jon",
             "AccountId": "@AccountRef1"
         }
     ]
