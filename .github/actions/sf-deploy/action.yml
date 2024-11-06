@@ -106,8 +106,6 @@ runs:
       shell: bash
       run: |
         # Initialize an array to hold deployment flags
-        echo -e "\nsalala: $MEMBERS"
-        echo -e "\nsalala: $DELETE_MEMBERS"
         deployFlags=(
             --wait ${{ inputs.WAIT }}  # Add wait time as a flag for the deployment command
         )
