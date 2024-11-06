@@ -16,8 +16,11 @@ def count_members_in_package(package_file):
         types_elements = root.findall('sf:types', namespace)
         if not types_elements:
             types_elem = ET.Element('{http://soap.sforce.com/2006/04/metadata}types')
-            root.append(types_elem)
-            tree.write(package_file, encoding='utf-8', xml_declaration=True)
+            root.insert(0, types_elem)
+            rough_string = ET.tostring(root, encoding='utf-8')
+            xml_declaration = b'<?xml version="1.0" encoding="UTF-8"?>\n'
+            with open(package_file, 'wb') as f:
+                f.write(xml_declaration + rough_string)
             return 0
 
         member_count = sum(len(type_elem.findall('sf:members', namespace)) for type_elem in types_elements)
