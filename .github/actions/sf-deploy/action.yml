@@ -110,7 +110,7 @@ runs:
             --wait ${{ inputs.WAIT }}  # Add wait time as a flag for the deployment command
         )
         # Add flags based on the DEPLOY_TYPE
-        if [[ "${{ inputs.DEPLOY_TYPE }}" == "DELTA" && "$MEMBERS" -gt 0 ]]; then
+        if [[ "${{ inputs.DEPLOY_TYPE }}" == "DELTA" && "$MEMBERS" -gt 0 || "$DELETE_MEMBERS" -gt 0 && "${{ inputs.DEPLOY_TYPE }}" != "FULL" ]]; then
           # Add flags for delta deployments, including the manifest and post-destructive changes files
           deployFlags+=( --manifest package/package.xml )
         fi
