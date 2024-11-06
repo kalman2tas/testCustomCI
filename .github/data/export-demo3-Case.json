@@ -1,0 +1,12 @@
+{
+    "records": [
+        {
+            "attributes": {
+                "type": "Case",
+                "referenceId": "CaseRef1"
+            },
+            "CaseNumber": "00001000",
+            "ContactId": "@ContactRef3"
+        }
+    ]
+}
