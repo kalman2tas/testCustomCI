@@ -5,25 +5,14 @@ import xml.etree.ElementTree as ET
 def count_members_in_package(package_file):
     if not os.path.exists(package_file):
         return 0
-
+    
     try:
-        ET.register_namespace('', 'http://soap.sforce.com/2006/04/metadata')
         tree = ET.parse(package_file)
         root = tree.getroot()
 
         namespace = {'sf': 'http://soap.sforce.com/2006/04/metadata'}
 
-        types_elements = root.findall('sf:types', namespace)
-        if not types_elements:
-            types_elem = ET.Element('{http://soap.sforce.com/2006/04/metadata}types')
-            root.insert(0, types_elem)
-            rough_string = ET.tostring(root, encoding='utf-8')
-            xml_declaration = b'<?xml version="1.0" encoding="UTF-8"?>\n'
-            with open(package_file, 'wb') as f:
-                f.write(xml_declaration + rough_string)
-            return 0
-
-        member_count = sum(len(type_elem.findall('sf:members', namespace)) for type_elem in types_elements)
+        member_count = sum(len(type_elem.findall('sf:members', namespace)) for type_elem in root.findall('sf:types', namespace))
         return member_count
 
     except ET.ParseError:
@@ -31,6 +20,4 @@ def count_members_in_package(package_file):
     except Exception as e:
         return 0
 
-if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        print(count_members_in_package(sys.argv[1]))
+print(count_members_in_package(sys.argv[1]))
