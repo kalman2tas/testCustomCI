@@ -78,10 +78,10 @@ runs:
         python ./.github/scripts/destructiveCleaner.py
         echo -e "\nDestructive Changes:"
         cat destructiveChanges/destructiveChanges.xml
-        MEMBERS_COUNT=$(python ./.github/scripts/countMembers.py package/package.xml)
+        MEMBERS_COUNT=$(python ./.github/scripts/countMembers.py "package/package.xml")
         echo "MEMBERS=$MEMBERS_COUNT" >> $GITHUB_ENV
         echo -e "\nNumer of changed items: $MEMBERS"
-        MEMBERS_COUNT=$(python ./.github/scripts/countMembers.py destructiveChanges/destructiveChanges.xm)
+        MEMBERS_COUNT=$(python ./.github/scripts/countMembers.py "destructiveChanges/destructiveChanges.xml")
         echo "DELETE_MEMBERS=$MEMBERS_COUNT" >> $GITHUB_ENV
         echo -e "\nNumer of items to delete: $DELETE_MEMBERS"
 
