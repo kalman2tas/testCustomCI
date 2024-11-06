@@ -114,7 +114,7 @@ runs:
           # Add flags for delta deployments, including the manifest and post-destructive changes files
           deployFlags+=( --manifest package/package.xml )
         fi
-        if [[ "${{ inputs.DESTRUCIVE }}" = "true" && "$DELETE_MEMBERS" -gt 0 ]]; then
+        if [[ "${{ inputs.DESTRUCTIVE }}" = "true" && "$DELETE_MEMBERS" -gt 0 ]]; then
           deployFlags+=( --post-destructive-changes destructiveChanges/destructiveChanges.xml )
           deployFlags+=( --ignore-warnings )
         fi
