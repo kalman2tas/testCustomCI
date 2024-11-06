@@ -7,6 +7,7 @@ def count_members_in_package(package_file):
         return 0
 
     try:
+        ET.register_namespace('', 'http://soap.sforce.com/2006/04/metadata')
         tree = ET.parse(package_file)
         root = tree.getroot()
 
