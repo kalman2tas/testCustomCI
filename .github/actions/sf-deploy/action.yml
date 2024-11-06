@@ -73,17 +73,17 @@ runs:
         # Generate a delta deployment package based on changes between the base and compare branches
         sf sgd:source:delta --to "refs/heads/$COMPARE_BRANCH" --from "refs/heads/$BASE_BRANCH" --output '.'
         # Display the contents of the generated package.xml file and destructiveChanges.xml file
-        echo "Deployment package:"
-        cat package/package.xml
         python ./.github/scripts/destructiveCleaner.py
-        echo -e "\nDestructive Changes:"
-        cat destructiveChanges/destructiveChanges.xml
         MEMBERS_COUNT=$(python ./.github/scripts/countMembers.py "package/package.xml")
         echo "MEMBERS=$MEMBERS_COUNT" >> $GITHUB_ENV
         echo -e "\nNumer of changed items: $MEMBERS_COUNT"
         MEMBERS_COUNT=$(python ./.github/scripts/countMembers.py "destructiveChanges/destructiveChanges.xml")
         echo "DELETE_MEMBERS=$MEMBERS_COUNT" >> $GITHUB_ENV
         echo -e "\nNumer of items to delete: $MEMBERS_COUNT"
+        echo -e "\Deployment package:"
+        cat package/package.xml
+        echo -e "\nDestructive Changes:"
+        cat destructiveChanges/destructiveChanges.xml
 
     - name: Generate FULL package.xml
       if: ${{ inputs.DEPLOY_TYPE == 'FULL'}}  # Execute this step only if the DEPLOY_TYPE is 'FULL'
