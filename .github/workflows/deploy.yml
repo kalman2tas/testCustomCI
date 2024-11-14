@@ -49,7 +49,7 @@ jobs:
           WAIT: 30
           SFDX_AUTH_URL: ${{ env.SFDX_AUTH_URL }}
           DEPLOY_TYPE: ${{ env.DEPLOY_TYPE }}
-          DESTRUCIVE: ${{ env.DESTRUCIVE }}
+          DESTRUCTIVE: ${{ env.DESTRUCTIVE }}
 
       - name: Deploy to target org (FULL)
         if: ${{ steps.check_approvals_status.outputs.check_approvals_status == 'success' && env.DEPLOY_TYPE == 'FULL' }}
@@ -60,7 +60,7 @@ jobs:
           DEPLOY_TYPE: FULL
           WAIT: 30
           SFDX_AUTH_URL: ${{ env.SFDX_AUTH_URL }}
-          DESTRUCIVE: ${{ env.DESTRUCIVE }}
+          DESTRUCTIVE: ${{ env.DESTRUCTIVE }}
 
       - name: Deploy to target org (QUICK)
         if: ${{ steps.check_approvals_status.outputs.check_approvals_status == 'success' && env.DEPLOY_TYPE == 'QUICK' }}

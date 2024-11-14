@@ -1,6 +1,7 @@
 import xml.etree.ElementTree as ET
 
 def remove_unwanted_members(xml_file):
+    ET.register_namespace('', 'http://soap.sforce.com/2006/04/metadata')
     tree = ET.parse(xml_file)
     root = tree.getroot()
 

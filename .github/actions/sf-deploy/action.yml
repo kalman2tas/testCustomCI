@@ -9,7 +9,7 @@ inputs:
   DRY_RUN:
     description: "Validate deploy and run Apex tests but don't save to the org."  # Optional: run validation without applying changes
     type: boolean
-  DESTRUCIVE:
+  DESTRUCTIVE:
     description: "Is destructive delta to be deleted."
     type: boolean
     default: true
@@ -39,7 +39,7 @@ runs:
   steps:
     - name: Install Salesforce CLI
       shell: bash
-      if: ${{ inputs.DEPLOY_TYPE == 'DELTA' || inputs.DESTRUCIVE == 'true'}}
+      if: ${{ inputs.DEPLOY_TYPE == 'DELTA' || inputs.DESTRUCTIVE == 'true'}}
       run: |
         # Install the Salesforce CLI globally on the runner
         npm install -g @salesforce/cli
@@ -55,7 +55,7 @@ runs:
         sf org login sfdx-url --set-default --sfdx-url-file <(echo "${{ inputs.SFDX_AUTH_URL }}")
 
     - name: Fetch branches
-      if: ${{ inputs.DEPLOY_TYPE == 'DELTA' || inputs.DESTRUCIVE == 'true'}}
+      if: ${{ inputs.DEPLOY_TYPE == 'DELTA' || inputs.DESTRUCTIVE == 'true'}}
       shell: bash
       run: |
         # Fetch the base branch of the pull request (the target branch for the deployment)
@@ -64,7 +64,7 @@ runs:
         git fetch origin ${{ github.event.pull_request.head.ref }}:${{ github.event.pull_request.head.ref }}
 
     - name: Generate package.xml
-      if: ${{ inputs.DEPLOY_TYPE == 'DELTA' || inputs.DESTRUCIVE == 'true'}}  # Execute this step only if the DEPLOY_TYPE is 'DELTA'
+      if: ${{ inputs.DEPLOY_TYPE == 'DELTA' || inputs.DESTRUCTIVE == 'true'}}  # Execute this step only if the DEPLOY_TYPE is 'DELTA'
       shell: bash
       run: |
         # Set environment variables for the base and compare branches
@@ -73,12 +73,17 @@ runs:
         # Generate a delta deployment package based on changes between the base and compare branches
         sf sgd:source:delta --to "refs/heads/$COMPARE_BRANCH" --from "refs/heads/$BASE_BRANCH" --output '.'
         # Display the contents of the generated package.xml file and destructiveChanges.xml file
-        echo "Deployment package:"
-        cat package/package.xml
         python ./.github/scripts/destructiveCleaner.py
+        MEMBERS_COUNT=$(python ./.github/scripts/countMembers.py "package/package.xml")
+        echo "MEMBERS=$MEMBERS_COUNT" >> $GITHUB_ENV
+        echo -e "\nNumer of changed items: $MEMBERS_COUNT"
+        MEMBERS_COUNT=$(python ./.github/scripts/countMembers.py "destructiveChanges/destructiveChanges.xml")
+        echo "DELETE_MEMBERS=$MEMBERS_COUNT" >> $GITHUB_ENV
+        echo -e "\nNumer of items to delete: $MEMBERS_COUNT"
+        echo -e "\Deployment package:"
+        cat package/package.xml
         echo -e "\nDestructive Changes:"
         cat destructiveChanges/destructiveChanges.xml
-        MEMBERS=$(python ./.github/scripts/countMembers.py)
 
     - name: Generate FULL package.xml
       if: ${{ inputs.DEPLOY_TYPE == 'FULL'}}  # Execute this step only if the DEPLOY_TYPE is 'FULL'
@@ -105,11 +110,11 @@ runs:
             --wait ${{ inputs.WAIT }}  # Add wait time as a flag for the deployment command
         )
         # Add flags based on the DEPLOY_TYPE
-        if [[ "${{ inputs.DEPLOY_TYPE }}" == "DELTA" ]]; then
+        if [[ "${{ inputs.DEPLOY_TYPE }}" == "DELTA" && "$MEMBERS" -gt 0 || "$DELETE_MEMBERS" -gt 0 && "${{ inputs.DEPLOY_TYPE }}" != "FULL" ]]; then
           # Add flags for delta deployments, including the manifest and post-destructive changes files
           deployFlags+=( --manifest package/package.xml )
         fi
-        if [ "${{ inputs.DESTRUCIVE }}" = "true" ]; then
+        if [[ "${{ inputs.DESTRUCTIVE }}" = "true" && "$DELETE_MEMBERS" -gt 0 ]]; then
           deployFlags+=( --post-destructive-changes destructiveChanges/destructiveChanges.xml )
           deployFlags+=( --ignore-warnings )
         fi
@@ -138,8 +143,10 @@ runs:
         if [ "${{ inputs.DRY_RUN }}" = "true" ]; then
           deployFlags+=( --dry-run )
         fi
-        if [[ "${{ inputs.DEPLOY_TYPE }}" == "FULL" || "$MEMBERS" -gt 0 ]]; then
+        if [[ "${{ inputs.DEPLOY_TYPE }}" == "FULL" || "$MEMBERS" -gt 0 || "$DELETE_MEMBERS" -gt 0 ]]; then
           # Start the Salesforce deployment process with the specified flags
+          echo "Deployment parameters:"
+          printf '%s\n' "${deployFlags[@]}"
           sf project deploy start "${deployFlags[@]}"
         else
           echo "No items in the package xml-s to deploy, deploment is skipped."

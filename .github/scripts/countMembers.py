@@ -1,9 +1,9 @@
 import os
+import sys
 import xml.etree.ElementTree as ET
 
 def count_members_in_package(package_file):
     if not os.path.exists(package_file):
-        print(f"Fájl nem létezik: {package_file}")
         return 0
     
     try:
@@ -20,18 +20,4 @@ def count_members_in_package(package_file):
     except Exception as e:
         return 0
 
-def count_members_in_multiple_packages(package_files):
-    total_members = 0
-    for package_file in package_files:
-        total_members += count_members_in_package(package_file)
-    return total_members
-
-if __name__ == "__main__":
-    package_files = [
-        'package/package.xml',
-        'destructiveChanges/destructiveChanges.xml',
-    ]
-    
-
-    total_member_count = count_members_in_multiple_packages(package_files)
-    print(total_member_count)
+print(count_members_in_package(sys.argv[1]))

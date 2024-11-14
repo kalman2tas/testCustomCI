@@ -20,6 +20,6 @@ jobs:
           DRY_RUN: false
           TEST_LEVEL: RunLocalTests
           DEPLOY_TYPE: FULL
-          DESTRUCIVE: false
+          DESTRUCTIVE: false
           WAIT: 30
           SFDX_AUTH_URL: ${{ secrets.SFDX_AUTH_URL_INT }}

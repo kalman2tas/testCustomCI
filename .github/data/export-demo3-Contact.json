@@ -1,0 +1,31 @@
+{
+    "records": [
+        {
+            "attributes": {
+                "type": "Contact",
+                "referenceId": "ContactRef1"
+            },
+            "FirstName": "Amos",
+            "LastName": "Minor",
+            "AccountId": "@AccountRef1"
+        },
+        {
+            "attributes": {
+                "type": "Contact",
+                "referenceId": "ContactRef2"
+            },
+            "FirstName": "Amos",
+            "LastName": "Jony",
+            "AccountId": "@AccountRef1"
+        },
+        {
+            "attributes": {
+                "type": "Contact",
+                "referenceId": "ContactRef3"
+            },
+            "FirstName": "Amos",
+            "LastName": "Jon",
+            "AccountId": "@AccountRef1"
+        }
+    ]
+}
