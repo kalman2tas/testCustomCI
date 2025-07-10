@@ -63,6 +63,11 @@ runs:
         # Fetch the head branch of the pull request (the source branch with changes)
         git fetch origin ${{ github.event.pull_request.head.ref }}:${{ github.event.pull_request.head.ref }}
 
+    - name: Check for PR defined test classes
+      shell: bash
+      run: |
+        echo "${{ github.event.pull_request.body }}"
+
     - name: Generate package.xml
       if: ${{ inputs.DEPLOY_TYPE == 'DELTA' || inputs.DESTRUCTIVE == 'true'}}  # Execute this step only if the DEPLOY_TYPE is 'DELTA'
       shell: bash
