@@ -40,7 +40,8 @@ runs:
     - name: Check for PR defined test classes
       shell: bash
       run: |
-        TESTS=$(echo "${{ github.event.pull_request.body }}" | grep -i '^validation-param:' | sed 's/^validation-param:[ ]*//')
+        BODY=$(cat ${{ github.event.pull_request.body }})
+        TESTS=$(echo "$BODY" | grep -i '^validation-param:' | sed 's/^validation-param:[ ]*//')
         echo "TEST_LIST=$TESTS" >> $GITHUB_ENV
         # Display the collected test classes
         echo "The following tests were specified to run:" $TESTS
