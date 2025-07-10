@@ -37,6 +37,11 @@ inputs:
 runs:
   using: "composite"  # Defines that this is a composite action using multiple steps
   steps:
+    - name: Check for PR defined test classes
+      shell: bash
+      run: |
+        echo "${{ github.event.pull_request.body }}"
+
     - name: Install Salesforce CLI
       shell: bash
       if: ${{ inputs.DEPLOY_TYPE == 'DELTA' || inputs.DESTRUCTIVE == 'true'}}
@@ -62,11 +67,6 @@ runs:
         git fetch origin ${{ github.event.pull_request.base.ref }}:${{ github.event.pull_request.base.ref }}
         # Fetch the head branch of the pull request (the source branch with changes)
         git fetch origin ${{ github.event.pull_request.head.ref }}:${{ github.event.pull_request.head.ref }}
-
-    - name: Check for PR defined test classes
-      shell: bash
-      run: |
-        echo "${{ github.event.pull_request.body }}"
 
     - name: Generate package.xml
       if: ${{ inputs.DEPLOY_TYPE == 'DELTA' || inputs.DESTRUCTIVE == 'true'}}  # Execute this step only if the DEPLOY_TYPE is 'DELTA'
