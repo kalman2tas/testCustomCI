@@ -43,7 +43,7 @@ runs:
     - name: Check for PR defined test classes
       shell: bash
       run: |
-        TESTS=$(echo inputs.PR_BODY | grep -i '^TestClasses:' | sed 's/^TestClasses:[ ]*//')
+        TESTS=$(echo "${{ inputs.PR_BODY }}" | grep -i '^TestClasses:' | sed 's/^TestClasses:[ ]*//')
         echo "TEST_LIST=$TESTS" >> $GITHUB_ENV
         # Display the collected test classes
         echo "The following tests were specified to run:" $TESTS
