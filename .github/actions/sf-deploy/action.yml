@@ -41,7 +41,6 @@ runs:
       shell: bash
       run: |
         BODY="${{ github.event.pull_request.body }}"
-        echo "PR body: $BODY"
         TESTS=$(echo "$BODY" | grep -i '^validation-param:' | sed 's/^validation-param:[ ]*//')
         echo "TEST_LIST=$TESTS" >> $GITHUB_ENV
         # Display the collected test classes
