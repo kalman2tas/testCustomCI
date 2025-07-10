@@ -5,6 +5,9 @@ branding:
   icon: code
   color: blue
 
+env:
+  BODY: ${{ github.event.pull_request.body }}
+
 inputs:
   DRY_RUN:
     description: "Validate deploy and run Apex tests but don't save to the org."  # Optional: run validation without applying changes
@@ -40,7 +43,6 @@ runs:
     - name: Check for PR defined test classes
       shell: bash
       run: |
-        BODY="${{ github.event.pull_request.body }}"
         TESTS=$(echo "$BODY" | grep -i '^validation-param:' | sed 's/^validation-param:[ ]*//')
         echo "TEST_LIST=$TESTS" >> $GITHUB_ENV
         # Display the collected test classes
