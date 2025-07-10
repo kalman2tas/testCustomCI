@@ -40,7 +40,12 @@ runs:
     - name: Check for PR defined test classes
       shell: bash
       run: |
-        echo "${{ github.event.pull_request.body }}"
+        BODY="${{ github.event.pull_request.body }}"
+        echo "PR body: $BODY"
+        TESTS=$(echo "$BODY" | grep -i '^validation-param:' | sed 's/^validation-param:[ ]*//')
+        echo "TEST_LIST=$TESTS" >> $GITHUB_ENV
+        # Display the collected test classes
+        echo "The following tests were specified to run:" $TESTS
 
     - name: Install Salesforce CLI
       shell: bash
