@@ -138,7 +138,10 @@ runs:
         if [[ -n "$TEST_LIST" ]]; then
           # Run specified tests if TEST_LEVEL is 'RunSpecifiedTests' and TEST_LIST is not empty
           deployFlags+=( --test-level ${{ inputs.TEST_LEVEL }} )
-          deployFlags+=( --tests $TEST_LIST )
+          IFS=',' read -ra test_array <<< "$TEST_LIST"
+          for test_class in "${test_array[@]}"; do
+            deployFlags+=( --tests "$test_class" )
+          done
           echo "Test runs in the following mode: RunSpecifiedTests"
         fi
         if [[ "${{ inputs.TEST_LEVEL }}" != "RunSpecifiedTests" ]]; then
