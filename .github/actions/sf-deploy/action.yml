@@ -35,13 +35,14 @@ inputs:
     type: string
   PR_BODY:
     description: 'Pull request body'
-    required: true
+    default: ''
 
 runs:
   using: "composite"  # Defines that this is a composite action using multiple steps
   steps:
     - name: Check for PR defined test classes
       shell: bash
+      if: inputs.PR_BODY != ''
       run: |
         TESTS=$(echo "${{ inputs.PR_BODY }}" | grep -i '^TestClasses:' | sed 's/^TestClasses:[ ]*//')
         echo "TEST_LIST=$TESTS" >> $GITHUB_ENV
@@ -103,7 +104,7 @@ runs:
         sfdx force:source:convert -r ./force-app/ -d mdapi2
 
     - name: Collect test classes
-      if: ${{ inputs.TEST_LEVEL == 'RunSpecifiedTests' }}  # Execute this step only if TEST_LEVEL is 'RunSpecifiedTests'
+      if: inputs.TEST_LEVEL == 'RunSpecifiedTests' && env.TEST_LIST == ''  # Execute this step only if TEST_LEVEL is 'RunSpecifiedTests'
       shell: bash
       run: |
         # Run a Python script to collect the list of test classes to execute
@@ -134,7 +135,7 @@ runs:
           deployFlags+=( --manifest mdapi2/package.xml )
         fi
         # Add test level and test list based on the TEST_LEVEL setting
-        if [[ "${{ inputs.TEST_LEVEL }}" == "RunSpecifiedTests" && -n "$TEST_LIST" ]]; then
+        if [[ -n "$TEST_LIST" ]]; then
           # Run specified tests if TEST_LEVEL is 'RunSpecifiedTests' and TEST_LIST is not empty
           deployFlags+=( --test-level ${{ inputs.TEST_LEVEL }} )
           deployFlags+=( --tests $TEST_LIST )
