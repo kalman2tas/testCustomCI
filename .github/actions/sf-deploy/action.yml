@@ -164,7 +164,7 @@ runs:
           # Start the Salesforce deployment process with the specified flags
           echo "Deployment parameters:"
           printf '%s\n' "${deployFlags[@]}"
-          sf project deploy start --api-version 50.0 "${deployFlags[@]}"
+          sf project deploy validate "${deployFlags[@]}"
         else
           echo "No items in the package xml-s to deploy, deploment is skipped."
         fi
