@@ -40,6 +40,15 @@ inputs:
 runs:
   using: "composite"  # Defines that this is a composite action using multiple steps
   steps:
+    - name: Read current PR body using GitHub CLI
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        PR_NUMBER="${{ github.event.pull_request.number }}"
+        PR_BODY=$(gh pr view $PR_NUMBER --json body -q '.body')
+        echo $PR_BODY
+        
     - name: Check for PR defined test classes
       shell: bash
       if: inputs.PR_BODY != ''
