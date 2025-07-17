@@ -33,9 +33,6 @@ inputs:
   DEPLOY_TYPE:
     description: "Validate only delta package or full"  # Type of deployment (delta or full)
     type: string
-  PR_BODY:
-    description: 'Pull request body'
-    default: ''
 
 runs:
   using: "composite"  # Defines that this is a composite action using multiple steps

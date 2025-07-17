@@ -54,4 +54,3 @@ jobs:
           SFDX_AUTH_URL: ${{ env.SFDX_AUTH_URL }}  # Pass the Salesforce DX authentication URL
           DEPLOY_TYPE: ${{ env.DEPLOY_TYPE }}  # Pass the deployment type
           DESTRUCTIVE: ${{ env.DESTRUCTIVE }}
-          PR_BODY: ${{ github.event.pull_request.body }}

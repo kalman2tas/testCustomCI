@@ -50,7 +50,6 @@ jobs:
           SFDX_AUTH_URL: ${{ env.SFDX_AUTH_URL }}
           DEPLOY_TYPE: ${{ env.DEPLOY_TYPE }}
           DESTRUCTIVE: ${{ env.DESTRUCTIVE }}
-          PR_BODY: ${{ github.event.pull_request.body }}
 
       - name: Deploy to target org (FULL)
         if: ${{ steps.check_approvals_status.outputs.check_approvals_status == 'success' && env.DEPLOY_TYPE == 'FULL' }}
@@ -62,7 +61,6 @@ jobs:
           WAIT: 30
           SFDX_AUTH_URL: ${{ env.SFDX_AUTH_URL }}
           DESTRUCTIVE: ${{ env.DESTRUCTIVE }}
-          PR_BODY: ${{ github.event.pull_request.body }}
 
       - name: Deploy to target org (QUICK)
         if: ${{ steps.check_approvals_status.outputs.check_approvals_status == 'success' && env.DEPLOY_TYPE == 'QUICK' }}
