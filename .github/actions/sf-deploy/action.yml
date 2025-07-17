@@ -40,20 +40,15 @@ inputs:
 runs:
   using: "composite"  # Defines that this is a composite action using multiple steps
   steps:
-    - name: Read current PR body using GitHub CLI
+    - name: Check for PR defined test classes
       shell: bash
+      if: github.event_name == 'pull_request'
       env:
         GH_TOKEN: ${{ github.token }}
       run: |
         PR_NUMBER="${{ github.event.pull_request.number }}"
         PR_BODY=$(gh pr view $PR_NUMBER --json body -q '.body')
-        echo $PR_BODY
-        
-    - name: Check for PR defined test classes
-      shell: bash
-      if: inputs.PR_BODY != ''
-      run: |
-        TESTS=$(echo "${{ inputs.PR_BODY }}" | grep -i '^TestClasses:' | sed 's/^TestClasses:[ ]*//')
+        TESTS=$(echo "$PR_BODY" | grep -i '^TestClasses:' | sed 's/^TestClasses:[ ]*//')
         echo "TEST_LIST=$TESTS" >> $GITHUB_ENV
         # Display the collected test classes
         echo "The following tests were specified to run:" $TESTS
