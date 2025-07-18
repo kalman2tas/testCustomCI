@@ -33,18 +33,19 @@ inputs:
   DEPLOY_TYPE:
     description: "Validate only delta package or full"  # Type of deployment (delta or full)
     type: string
-  PR_BODY:
-    description: 'Pull request body'
-    default: ''
 
 runs:
   using: "composite"  # Defines that this is a composite action using multiple steps
   steps:
     - name: Check for PR defined test classes
       shell: bash
-      if: inputs.PR_BODY != ''
+      if: github.event_name == 'pull_request'
+      env:
+        GH_TOKEN: ${{ github.token }}
       run: |
-        TESTS=$(echo "${{ inputs.PR_BODY }}" | grep -i '^TestClasses:' | sed 's/^TestClasses:[ ]*//')
+        PR_NUMBER="${{ github.event.pull_request.number }}"
+        PR_BODY=$(gh pr view $PR_NUMBER --json body -q '.body')
+        TESTS=$(echo "$PR_BODY" | grep -i '^TestClasses:' | sed 's/^TestClasses:[ ]*//')
         echo "TEST_LIST=$TESTS" >> $GITHUB_ENV
         # Display the collected test classes
         echo "The following tests were specified to run:" $TESTS
