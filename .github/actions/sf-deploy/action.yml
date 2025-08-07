@@ -9,6 +9,7 @@ inputs:
   DRY_RUN:
     description: "Validate deploy and run Apex tests but don't save to the org."  # Optional: run validation without applying changes
     type: boolean
+    default: false
   DESTRUCTIVE:
     description: "Is destructive delta to be deleted."
     type: boolean
