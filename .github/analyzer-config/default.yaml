@@ -1,21 +1,19 @@
 engines:
-  - name: pmd
+  pmd:
     enabled: true
     options:
       language: apex
 
-  - name: eslint
+  eslint:
     enabled: true
     options:
       language: javascript
 
 rules:
-  - engine: pmd
-    rules:
-      - apex/no-global-sosl
-      - apex/no-hardcoded-ids
+  pmd:
+    - apex/no-global-sosl
+    - apex/no-hardcoded-ids
 
-  - engine: eslint
-    rules:
-      - eslint/no-unused-vars
-      - eslint/no-console
+  eslint:
+    - eslint/no-unused-vars
+    - eslint/no-console
