@@ -44,5 +44,5 @@ rules:
     apex/no-global-sosl: {}
     apex/no-hardcoded-ids: {}
 
-  cpd:
+  cpd: {}
 
