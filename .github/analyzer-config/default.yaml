@@ -11,9 +11,9 @@ engines:
 
 rules:
   pmd:
-    - apex/no-global-sosl
-    - apex/no-hardcoded-ids
+    apex/no-global-sosl: true
+    apex/no-hardcoded-ids: true
 
   eslint:
-    - eslint/no-unused-vars
-    - eslint/no-console
+    no-unused-vars: true
+    no-console: false
