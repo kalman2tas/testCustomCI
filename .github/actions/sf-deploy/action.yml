@@ -21,7 +21,6 @@ inputs:
   ANALYZER_CONFIG:
     description: "Analyzer config file path."
     type: string
-    default: ".github/analyzer-config/default.yaml"  # Default path to the analyzer configuration file
   TEST_LEVEL:
     description: "Deployment Apex testing level."  # Defines the level of Apex tests to be run during deployment
     type: choice
@@ -85,11 +84,16 @@ runs:
         # Fetch the head branch of the pull request (the source branch with changes)
         git fetch origin ${{ github.event.pull_request.head.ref }}:${{ github.event.pull_request.head.ref }}
 
-    - name: Run Code Alayzer
+    - name: Run Code Analyzer
       shell: bash
-      if: ${{ inputs.ANALYZER == 'true'}}
+      if: ${{ inputs.ANALYZER == 'true' }}
       run: |
-        sf code-analyzer run --config-file "${{ inputs.ANALYZER_CONFIG }}"
+        if [[ -n "${{ inputs.ANALYZER_CONFIG }}" ]]; then
+          sf code-analyzer run --config-file "${{ inputs.ANALYZER_CONFIG }}"
+        else
+          sf code-analyzer run
+        fi
+
 
     - name: Generate package.xml
       if: ${{ inputs.DEPLOY_TYPE == 'DELTA' || inputs.DESTRUCTIVE == 'true'}}  # Execute this step only if the DEPLOY_TYPE is 'DELTA'
