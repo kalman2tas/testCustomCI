@@ -89,7 +89,7 @@ runs:
       shell: bash
       if: ${{ inputs.ANALYZER == 'true'}}
       run: |
-        sf code-analyzer run --config "${{ inputs.ANALYZER_CONFIG }}"
+        sf code-analyzer run --config-file "${{ inputs.ANALYZER_CONFIG }}"
 
     - name: Generate package.xml
       if: ${{ inputs.DEPLOY_TYPE == 'DELTA' || inputs.DESTRUCTIVE == 'true'}}  # Execute this step only if the DEPLOY_TYPE is 'DELTA'
