@@ -1,6 +1,5 @@
 engines:
   eslint:
-    enabled: true
     options:
       language: javascript
 
