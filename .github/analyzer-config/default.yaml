@@ -1,19 +1,48 @@
 engines:
-  pmd:
-    enabled: true
-    options:
-      language: apex
-
   eslint:
     enabled: true
     options:
       language: javascript
 
-rules:
-  pmd:
-    apex/no-global-sosl: true
-    apex/no-hardcoded-ids: true
+  retire-js:
+    enabled: true
 
+  regex:
+    enabled: true
+    options:
+      rules:
+        NoTodoComments:
+          description: "Detect TODO comments in Apex files"
+          regex: "/TODO/gi"
+          language: apex
+          severity: warning
+
+  pmd:
+    enabled: true
+    options:
+      language: apex
+
+  cpd:
+    enabled: true
+    options:
+      minimumTokens: 100
+
+rules:
   eslint:
-    no-unused-vars: true
-    no-console: false
+    no-unused-vars: {}
+    no-console: {}
+
+  retire-js:
+
+  regex:
+    NoTodoComments:
+      severity: warning
+      tags:
+        - Custom
+
+  pmd:
+    apex/no-global-sosl: {}
+    apex/no-hardcoded-ids: {}
+
+  cpd:
+
