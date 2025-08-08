@@ -1,22 +1,25 @@
-rulesets:
+config_root: "force-app/main/default"
+log_folder: ".scannerwork"
+log_level: "info"
+
+engines:
+  - name: pmd
+    enabled: true
+    options:
+      language: apex
+
+  - name: eslint
+    enabled: true
+    options:
+      language: javascript
+
+rules:
   - engine: pmd
-    language: apex
     rules:
-      - category/apex/performance.xml
-      - category/apex/bestpractices.xml
-      - category/apex/security.xml
-      - category/apex/code-style.xml
+      - apex/no-global-sosl
+      - apex/no-hardcoded-ids
 
   - engine: eslint
-    language: javascript
     rules:
-      - eslint:recommended
-      - plugin:@lwc/recommended
-
-  - engine: htmlhint
-    language: html
-    rules:
-      - htmlhint:recommended
-
-paths:
-  - "force-app/main/default"
+      - eslint/no-unused-vars
+      - eslint/no-console
