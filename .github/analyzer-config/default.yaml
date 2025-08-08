@@ -1,9 +1,8 @@
 engines:
   eslint: {}
 
-  retire-js:
-    enabled: true
-
+  retire-js: {}
+  
   regex:
     enabled: true
     options:
