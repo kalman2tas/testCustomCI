@@ -32,7 +32,7 @@ rules:
     no-unused-vars: {}
     no-console: {}
 
-  retire-js:
+  retire-js: {}
 
   regex:
     NoTodoComments:
