@@ -1,4 +1,3 @@
-config_root: "force-app/main/default"
 log_folder: ".scannerwork"
 log_level: "info"
 
