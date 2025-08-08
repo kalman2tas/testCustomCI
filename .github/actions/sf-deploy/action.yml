@@ -14,6 +14,14 @@ inputs:
     description: "Is destructive delta to be deleted."
     type: boolean
     default: true
+  ANALYZER:
+    description: "Run Code Analyzer before deployment."  # Optional: run code analysis before deployment
+    type: boolean
+    default: false
+  ANALYZER_CONFIG:
+    description: "Analyzer config file path."
+    type: string
+    default: ".github/analyzer-config/default.yaml"  # Default path to the analyzer configuration file
   TEST_LEVEL:
     description: "Deployment Apex testing level."  # Defines the level of Apex tests to be run during deployment
     type: choice
@@ -79,8 +87,9 @@ runs:
 
     - name: Run Code Alayzer
       shell: bash
+      if: ${{ inputs.ANALYZER == 'true'}}
       run: |
-        sf code-analyzer run
+        sf code-analyzer run --config "${{ inputs.ANALYZER_CONFIG }}"
 
     - name: Generate package.xml
       if: ${{ inputs.DEPLOY_TYPE == 'DELTA' || inputs.DESTRUCTIVE == 'true'}}  # Execute this step only if the DEPLOY_TYPE is 'DELTA'

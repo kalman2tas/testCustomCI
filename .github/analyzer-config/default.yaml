@@ -1,0 +1,22 @@
+rulesets:
+  - engine: pmd
+    language: apex
+    rules:
+      - category/apex/performance.xml
+      - category/apex/bestpractices.xml
+      - category/apex/security.xml
+      - category/apex/code-style.xml
+
+  - engine: eslint
+    language: javascript
+    rules:
+      - eslint:recommended
+      - plugin:@lwc/recommended
+
+  - engine: htmlhint
+    language: html
+    rules:
+      - htmlhint:recommended
+
+paths:
+  - "force-app/main/default"
