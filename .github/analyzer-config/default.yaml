@@ -1,7 +1,5 @@
 engines:
   eslint:
-    options:
-      language: javascript
 
   retire-js:
     enabled: true
