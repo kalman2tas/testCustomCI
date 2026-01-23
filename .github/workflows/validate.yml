@@ -49,6 +49,7 @@ jobs:
         uses: ./.github/actions/sf-deploy
         with:
           DRY_RUN: true  # Run the validation in dry-run mode (no actual deployment)
+          ANALYZER: true  # Enable code analysis
           TEST_LEVEL: ${{ env.TEST_LEVEL }}  # Pass the test level environment variable
           WAIT: 30  # Wait time in seconds before finishing
           SFDX_AUTH_URL: ${{ env.SFDX_AUTH_URL }}  # Pass the Salesforce DX authentication URL
