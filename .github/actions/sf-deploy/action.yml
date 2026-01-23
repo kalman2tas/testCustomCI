@@ -1,6 +1,6 @@
 name: Salesforce Metadata Deploy
 description: Builds and validate deployments to a specified environment
-author: accadzo
+author: csaba.feher
 branding:
   icon: code
   color: blue
@@ -33,7 +33,7 @@ inputs:
   WAIT:
     description: "Number of minutes to wait for command to complete and display results."  # Time to wait for the deployment process to complete
     type: number
-    default: 30  # Default wait time in minutes
+    default: 120  # Default wait time in minutes
   SFDX_AUTH_URL:
     description: "The authorization URL for the deployment environment"  # URL used to authenticate the Salesforce CLI
     type: string
@@ -64,8 +64,10 @@ runs:
       run: |
         # Install the Salesforce CLI globally on the runner
         npm install -g @salesforce/cli
-        # Install the sfdx-git-delta plugin to handle delta deployments based on Git diffs
-        echo y | sf plugins:install sfdx-git-delta
+        if [[ "${{ inputs.DEPLOY_TYPE }}" == "DELTA" || "${{ inputs.DESTRUCTIVE }}" == "true" ]]; then
+          # Install the sfdx-git-delta plugin to handle delta deployments based on Git diffs
+          echo y | sf plugins:install sfdx-git-delta
+        fi
 
     - name: Login to Environment
       shell: bash
@@ -84,17 +86,6 @@ runs:
         # Fetch the head branch of the pull request (the source branch with changes)
         git fetch origin ${{ github.event.pull_request.head.ref }}:${{ github.event.pull_request.head.ref }}
 
-    - name: Run Code Analyzer
-      shell: bash
-      if: ${{ inputs.ANALYZER == 'true' }}
-      run: |
-        if [[ -n "${{ inputs.ANALYZER_CONFIG }}" ]]; then
-          sf code-analyzer run --config-file "${{ inputs.ANALYZER_CONFIG }}"
-        else
-          sf code-analyzer run
-        fi
-
-
     - name: Generate package.xml
       if: ${{ inputs.DEPLOY_TYPE == 'DELTA' || inputs.DESTRUCTIVE == 'true'}}  # Execute this step only if the DEPLOY_TYPE is 'DELTA'
       shell: bash
@@ -102,8 +93,11 @@ runs:
         # Set environment variables for the base and compare branches
         BASE_BRANCH="${{ github.event.pull_request.base.ref }}"
         COMPARE_BRANCH="${{ github.event.pull_request.head.ref }}"
+        FROM_COMMIT=$(git merge-base $COMPARE_BRANCH $BASE_BRANCH)
+        echo "from commit: $FROM_COMMIT"
         # Generate a delta deployment package based on changes between the base and compare branches
-        sf sgd:source:delta --to "refs/heads/$COMPARE_BRANCH" --from "refs/heads/$BASE_BRANCH" --output '.'
+        sf sgd source delta --to $COMPARE_BRANCH --from $FROM_COMMIT -d --output '.'
+        echo "sf sgd source delta --to $COMPARE_BRANCH --from $FROM_COMMIT -d --output '.'" 
         # Display the contents of the generated package.xml file and destructiveChanges.xml file
         python ./.github/scripts/destructiveCleaner.py
         MEMBERS_COUNT=$(python ./.github/scripts/countMembers.py "package/package.xml")
@@ -122,7 +116,26 @@ runs:
       shell: bash
       run: |
         sfdx force:source:convert -r ./force-app/ -d mdapi2
-
+    
+    - name: Run Code Analyzer
+      shell: bash
+      if: ${{ inputs.ANALYZER == 'true' }}
+      run: |
+        if [[ -n "${{ inputs.ANALYZER_CONFIG }}" ]]; then
+          sf code-analyzer run --config-file "${{ inputs.ANALYZER_CONFIG }}" -f "analyzer.html"
+        elif [[ "${{inputs.DEPLOY_TYPE}}" -eq "DELTA" ]]; then
+          sf code-analyzer run -t "output" -f "analyzer.html"
+        else
+          sf code-analyzer run -f "analyzer.html"
+        fi
+        
+    - name: Archive analyzer results
+      if: ${{ inputs.ANALYZER == 'true' }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: code-analyzer-output
+        path: analyzer.html
+        
     - name: Collect test classes
       if: inputs.TEST_LEVEL == 'RunSpecifiedTests' && env.TEST_LIST == ''  # Execute this step only if TEST_LEVEL is 'RunSpecifiedTests'
       shell: bash
@@ -157,7 +170,7 @@ runs:
         # Add test level and test list based on the TEST_LEVEL setting
         if [[ -n "$TEST_LIST" ]]; then
           # Run specified tests if TEST_LEVEL is 'RunSpecifiedTests' and TEST_LIST is not empty
-          deployFlags+=( --test-level ${{ inputs.TEST_LEVEL }} )
+          deployFlags+=( --test-level RunSpecifiedTests )
           IFS=',' read -ra test_array <<< "$TEST_LIST"
           for test_class in "${test_array[@]}"; do
             # Trim leading and trailing whitespace
@@ -166,7 +179,7 @@ runs:
           done
           echo "Test runs in the following mode: RunSpecifiedTests"
         fi
-        if [[ "${{ inputs.TEST_LEVEL }}" != "RunSpecifiedTests" ]]; then
+        elif [[ "${{ inputs.TEST_LEVEL }}" != "RunSpecifiedTests" ]]; then
           # Run tests based on other specified test levels
           deployFlags+=( --test-level ${{ inputs.TEST_LEVEL }} )
           echo "Test runs in the following mode: "${{ inputs.TEST_LEVEL }}
@@ -200,3 +213,10 @@ runs:
             fi
           done
         fi
+    
+    - name: Logout from Environment
+      shell: bash
+      if: always()
+      run: |
+        # Logout from Salesforce
+        echo y | sf org logout
