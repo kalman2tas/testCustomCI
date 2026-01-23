@@ -189,7 +189,7 @@ runs:
           echo "No items in the package xml-s to deploy, deploment is skipped."
         fi
         # Activate Experience sites
-        if [ "${{ inputs.DRY_RUN }}" = "true" ]; then
+        if [ "${{ inputs.DRY_RUN }}" = "false" ]; then
           for file in sites/*.xml; do
             if [[ -f "$file" ]]; then
               LABEL=$(grep -oPm1 '(?<=<masterLabel>).*?(?=</masterLabel>)' "$file")
