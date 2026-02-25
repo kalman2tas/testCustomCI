@@ -1,25 +1,77 @@
 name: Scheduled Full Deploy To Int
 
+env:
+  branch: ${{ vars.INT_BRANCH }}
+  org: ${{ vars.INT_ORG }}
+  dry_run: 'false'
+
 on:
   schedule:
     - cron: '0 2 * * *'
   workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Specify the source branch package (int, uat, main)'
+        required: true
+        default: 'int'
+        type: string
+      org:
+        description: 'Specify the target org (Devint, QA, PROD)'
+        required: true
+        default: 'Int'
+        type: string
+      dry_run:
+        description: '"true" to run a validation deployment'
+        required: true
+        default: 'true'
+        type: string
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: 'Set branch'   
+        if: github.event.inputs.branch != ''
+        shell: bash
+        run: |
+          echo "branch=${{ github.event.inputs.branch }}" >> "$GITHUB_ENV"
+
+      - name: 'Set org'   
+        if: github.event.inputs.org != ''
+        shell: bash
+        run: |
+          echo "org=${{ github.event.inputs.org }}" >> "$GITHUB_ENV"
+
+      - name: 'Set dry_run'   
+        if: github.event.inputs.dry_run != ''
+        shell: bash
+        run: |
+          echo "dry_run=${{ github.event.inputs.dry_run }}" >> "$GITHUB_ENV"
+          
       - uses: actions/checkout@v4
         with:
           ref: ${{ vars.INT_BRANCH }}
           fetch-depth: 0
-
+    
+      - name: Set SFDX Auth URL and Test Level
+        run: |
+          if [ "${{ env.org }}" == "DevInt" ]; then
+            echo "SFDX_AUTH_URL=${{ secrets.SFDX_AUTH_URL_INT }}" >> $GITHUB_ENV
+            echo "DEPLOY_DESTINATION=INT" >> $GITHUB_ENV
+          elif [ "${{ env.org }}" == "QA" ]; then
+            echo "SFDX_AUTH_URL=${{ secrets.SFDX_AUTH_URL_UAT }}" >> $GITHUB_ENV
+            echo "DEPLOY_DESTINATION=UAT" >> $GITHUB_ENV
+          elif [ "${{ env.org }}" == "PROD" ]; then
+            echo "SFDX_AUTH_URL=${{ secrets.SFDX_AUTH_URL_PROD }}" >> $GITHUB_ENV
+            echo "DEPLOY_DESTINATION=PROD" >> $GITHUB_ENV
+          fi
+    
       - name: Deploy full repository to ${{ vars.INT_ORG }} org
         uses: ./.github/actions/sf-deploy
         with:
-          DRY_RUN: false
+          DRY_RUN: ${{ env.dry_run }}
           TEST_LEVEL: RunLocalTests
           DEPLOY_TYPE: FULL
           DESTRUCTIVE: false
-          WAIT: 30
-          SFDX_AUTH_URL: ${{ secrets.SFDX_AUTH_URL_INT }}
+          WAIT: 180
+          SFDX_AUTH_URL: ${{ secrets.SFDX_AUTH_URL }}
