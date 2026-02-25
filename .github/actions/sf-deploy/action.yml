@@ -96,8 +96,8 @@ runs:
         FROM_COMMIT=$(git merge-base $COMPARE_BRANCH $BASE_BRANCH)
         echo "from commit: $FROM_COMMIT"
         # Generate a delta deployment package based on changes between the base and compare branches
-        sf sgd source delta --to $COMPARE_BRANCH --from $FROM_COMMIT -d --output '.'
-        echo "sf sgd source delta --to $COMPARE_BRANCH --from $FROM_COMMIT -d --output '.'" 
+        sf sgd source delta --to $COMPARE_BRANCH --from $FROM_COMMIT -d --output '.' -i .forceignore
+        echo "sf sgd source delta --to $COMPARE_BRANCH --from $FROM_COMMIT -d --output '.' -i .forceignore" 
         # Display the contents of the generated package.xml file and destructiveChanges.xml file
         python ./.github/scripts/destructiveCleaner.py
         MEMBERS_COUNT=$(python ./.github/scripts/countMembers.py "package/package.xml")
