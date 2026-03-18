@@ -119,14 +119,17 @@ runs:
     
     - name: Run Code Analyzer
       shell: bash
-      if: ${{ inputs.ANALYZER == 'true' }}
+      if: ${{ inputs.ANALYZER == 'true' && ( inputs.DEPLOY_TYPE == 'FULL' || env.MEMBERS > 0 ) }}
       run: |
+        TARGET_FOLDER="output"
+        if [[ "${{inputs.DEPLOY_TYPE}}" == "FULL" ]]; then
+          TARGET_FOLDER="UNO-FSC"
+        fi
+        echo "TARGET_FOLDER: $TARGET_FOLDER"
         if [[ -n "${{ inputs.ANALYZER_CONFIG }}" ]]; then
-          sf code-analyzer run --config-file "${{ inputs.ANALYZER_CONFIG }}" -f "analyzer.html"
-        elif [[ "${{inputs.DEPLOY_TYPE}}" -eq "DELTA" ]]; then
-          sf code-analyzer run -t "output" -f "analyzer.html"
+          sf code-analyzer run -t $TARGET_FOLDER --config-file "${{ inputs.ANALYZER_CONFIG }}" -f "analyzer.html"
         else
-          sf code-analyzer run -f "analyzer.html"
+          sf code-analyzer run -t $TARGET_FOLDER -f "analyzer.html"
         fi
         
     - name: Archive analyzer results
