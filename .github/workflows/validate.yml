@@ -3,13 +3,17 @@ name: Validate
 # Trigger this workflow on pull requests targeting specified branches
 on:
   pull_request:
+    types: 
+      - opened
+      - reopened
+      - synchronize
     branches:
       - int  # Trigger on pull requests to 'int' branch
       - uat  # Trigger on pull requests to 'uat' branch
       - main # Trigger on pull requests to 'main' branch
     paths:
-      - 'force-app/**' # Only trigger if changes are made in 'force-app' directory
-
+      - '**'
+      
 # Dynamically set the run name based on the target branch of the pull request
 run-name: >-
   ${{ github.event.pull_request.base.ref == 'int' && format('Validate to INT by {0} PR Name: {1}', github.event.pull_request.user.login, github.event.pull_request.title) || 
@@ -29,24 +33,35 @@ jobs:
       - name: Set SFDX Auth URL and Test Level
         run: |
           if [ "${{ github.event.pull_request.base.ref }}" == "${{ vars.INT_BRANCH }}" ]; then
+            echo "ANALYZER=true" >> $GITHUB_ENV
             echo "SFDX_AUTH_URL=${{ secrets.SFDX_AUTH_URL_INT }}" >> $GITHUB_ENV
             echo "TEST_LEVEL=RunSpecifiedTests" >> $GITHUB_ENV
             echo "DEPLOY_TYPE=DELTA" >> $GITHUB_ENV
+            echo "DESTRUCTIVE=${{ vars.INT_DESTRUCTIVE }}" >> $GITHUB_ENV
+            echo "DEPLOY_DESTINATION=INT" >> $GITHUB_ENV
           elif [ "${{ github.event.pull_request.base.ref }}" == "${{ vars.UAT_BRANCH }}" ]; then
+            echo "ANALYZER=false" >> $GITHUB_ENV
             echo "SFDX_AUTH_URL=${{ secrets.SFDX_AUTH_URL_UAT }}" >> $GITHUB_ENV
             echo "TEST_LEVEL=RunLocalTests" >> $GITHUB_ENV
             echo "DEPLOY_TYPE=FULL" >> $GITHUB_ENV
+            echo "DESTRUCTIVE=${{ vars.UAT_DESTRUCTIVE }}" >> $GITHUB_ENV
+            echo "DEPLOY_DESTINATION=UAT" >> $GITHUB_ENV
           elif [ "${{ github.event.pull_request.base.ref }}" == "${{ vars.MAIN_BRANCH }}" ]; then
+            echo "ANALYZER=false" >> $GITHUB_ENV
             echo "SFDX_AUTH_URL=${{ secrets.SFDX_AUTH_URL_PROD }}" >> $GITHUB_ENV
             echo "TEST_LEVEL=RunLocalTests" >> $GITHUB_ENV
             echo "DEPLOY_TYPE=FULL" >> $GITHUB_ENV
+            echo "DESTRUCTIVE=${{ vars.MAIN_DESTRUCTIVE }}" >> $GITHUB_ENV
+            echo "DEPLOY_DESTINATION=PROD" >> $GITHUB_ENV
           fi
 
       - name: Validate
         uses: ./.github/actions/sf-deploy
         with:
           DRY_RUN: true  # Run the validation in dry-run mode (no actual deployment)
+          ANALYZER: ${{ env.ANALYZER }}  # Enable code analysis
           TEST_LEVEL: ${{ env.TEST_LEVEL }}  # Pass the test level environment variable
-          WAIT: 30  # Wait time in seconds before finishing
+          WAIT: 120  # Wait time in seconds before finishing
           SFDX_AUTH_URL: ${{ env.SFDX_AUTH_URL }}  # Pass the Salesforce DX authentication URL
           DEPLOY_TYPE: ${{ env.DEPLOY_TYPE }}  # Pass the deployment type
+          DESTRUCTIVE: ${{ env.DESTRUCTIVE }}

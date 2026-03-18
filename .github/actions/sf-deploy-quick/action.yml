@@ -21,7 +21,7 @@ inputs:
   WAIT:
     description: "Number of minutes to wait for command to complete and display results."
     type: number
-    default: 30
+    default: 120
   SFDX_AUTH_URL:
     description: "The authorization URL for the deployment environment"
     type: string
@@ -34,10 +34,12 @@ runs:
       shell: bash
       run: |
         npm install -g @salesforce/cli
+        
     - name: Login to Environment
       shell: bash
       run: |
         sf org login sfdx-url --set-default --sfdx-url-file <(echo "${{ inputs.SFDX_AUTH_URL }}")
+        
     - name: Query Latest Deployment ID
       shell: bash
       id: get-deploy-id
@@ -56,3 +58,10 @@ runs:
       run: |
         echo "Performing quick deploy..."
         sf project deploy quick --job-id $QUICK_DEPLOY_ID --wait 10
+
+    - name: Logout from Environment
+      shell: bash
+      if: always()
+      run: |
+        # Logout from Salesforce
+        echo y | sf org logout

@@ -40,7 +40,14 @@
      - MAIN_BRANCH = main
      - INT_ORG = INT
 
-3. **Set workflow permissions:**
+3. **Add repository variables:**
+   - Enable/disable destructive changes for repositories.
+   - Change to variables tab and add New repository variables:
+     - INT_DESTRUCTIVE = true/false
+     - UAT_DESTRUCTIVE = true/false
+     - MAIN_DESTRUCTIVEH = true/false
+
+4. **Set workflow permissions:**
    - Go to Settings -> Actions -> General.
    - Set Read and Write permissions.
 
