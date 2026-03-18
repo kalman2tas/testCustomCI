@@ -1,5 +1,6 @@
 public class OpportunityProcessor {
     public static void updateOpportunityStage(Id opportunityId, String newStage) {
+        String dummy = 'dummy';
         Opportunity opp = [SELECT Id, StageName FROM Opportunity WHERE Id = :opportunityId];
         opp.StageName = newStage;
         update opp;

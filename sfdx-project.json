@@ -6,6 +6,27 @@
     }
   ],
   "name": "MYDEVORG",
+  "replacements": [
+    {
+	  "filename": "force-app/main/default/classes/myClass.cls",
+	  "stringToReplace": "replaceMe",
+	  "replaceWithFile": "replacements/replaceto.txt"  
+	  "replaceWhenEnv": [{
+	    "env": "DEPLOY_DESTINATION",
+	    "value": "PROD"
+	  }]  
+    },
+	{
+	  "filename": "UNO-FSC/force-app/main/default/customMetadata/DibeProductExtended.LegalProtectionInsurance.md-meta.xml",
+	  "stringToReplace": "-intg",
+	  "replaceWithEnv": "",
+	  "allowUnsetEnvVariable": true,
+	  "replaceWhenEnv": [{
+	    "env": "DEPLOY_DESTINATION",
+	    "value": "PROD"
+	  }]  
+	},
+  ]
   "namespace": "",
   "sfdcLoginUrl": "https://login.salesforce.com",
   "sourceApiVersion": "58.0"
